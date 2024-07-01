@@ -19,7 +19,13 @@ def H_BYTE(v):
 robot = Arm(RM65, ARM_IP)
 
 if __name__ == "__main__":
+    v = 90
+    t = 0.5
     joint0 = [0, 0, 0, 0, 0, 0]
+    joint_V1 = [78.609, 2.912, -123.641, -2.634, 110.595, -18.045]  # 比耶中间角度
+    joint_V2 = [78.609, 2.912, -123.641, -2.634, 110.595, -48.045]  # 比耶左边角度
+    joint_V3 = [78.609, 2.912, -123.641, -2.634, 110.595, 11.954]  # 比耶右边角度
+    joint_Dance =[89.638, -59.8, -124.738, 3.685, 111.726, -17.166]  # 手指舞角度
 
     joint1_bottle = [81.739, -66.847, -110.628, 0.692, 87.338, 62.775]  # 初始抓取水瓶关节角度
     pose0_bottle = [0.057, 0.384, 0.131, -1.573, -0.474, -0.155]  # 抓水瓶中间初始位置
@@ -66,28 +72,115 @@ if __name__ == "__main__":
 
     robot.Set_Modbus_Mode(1, 115200, 1, True)
 
-    robot.Write_Registers(COM_PORT, ROH_FINGER_POS_TARGET0, 6,
-                          [
-                              H_BYTE(0), L_BYTE(0),
-                              H_BYTE(0), L_BYTE(0),
-                              H_BYTE(0), L_BYTE(0),
-                              H_BYTE(0), L_BYTE(0),
-                              H_BYTE(0), L_BYTE(0),
-                              H_BYTE(0), L_BYTE(0),
-                          ],
-                          ROH_ADDR,
-                          True,
-                          )
-    ret = robot.Movej_Cmd(joint0, 50, 0, True)
-
-    ret = robot.Movej_Cmd(joint1_bottle, 30, 0, True)  # 初始抓取水瓶关节角度
-
-
 
     counter = 0
 
-    while counter < 1:
+    while counter < 3:
+        robot.Write_Registers(COM_PORT, ROH_FINGER_POS_TARGET0, 6,
+    [
+        H_BYTE(0), L_BYTE(0),
+        H_BYTE(0), L_BYTE(0),
+        H_BYTE(0), L_BYTE(0),
+        H_BYTE(0), L_BYTE(0),
+        H_BYTE(0), L_BYTE(0),
+        H_BYTE(0), L_BYTE(0),
+       ],
+       ROH_ADDR,
+       True,
+       )
+        ret = robot.Movej_Cmd(joint0, 50, 0, True)
 
+        ret = robot.Movej_Cmd(joint_Dance, 30, 0, True)  # 手指舞角度
+        # 手指舞
+        robot.Write_Registers(COM_PORT, ROH_FINGER_POS_TARGET4, 1,[H_BYTE(65535), L_BYTE(65535),],ROH_ADDR,True,)
+        time.sleep(0.5)
+        robot.Write_Registers(COM_PORT, ROH_FINGER_POS_TARGET3, 1, [H_BYTE(65535), L_BYTE(65535), ], ROH_ADDR, True, )
+        time.sleep(0.5)
+        robot.Write_Registers(COM_PORT, ROH_FINGER_POS_TARGET2, 1, [H_BYTE(65535), L_BYTE(65535), ], ROH_ADDR, True, )
+        time.sleep(0.5)
+        robot.Write_Registers(COM_PORT, ROH_FINGER_POS_TARGET1, 1, [H_BYTE(65535), L_BYTE(65535), ], ROH_ADDR, True, )
+        time.sleep(0.5)
+        robot.Write_Registers(COM_PORT, ROH_FINGER_POS_TARGET5, 1, [H_BYTE(65535), L_BYTE(65535), ], ROH_ADDR, True, )
+        time.sleep(0.5)
+        robot.Write_Registers(COM_PORT, ROH_FINGER_POS_TARGET0, 1, [H_BYTE(65535), L_BYTE(65535), ], ROH_ADDR, True, )
+        time.sleep(1)
+        robot.Write_Registers(COM_PORT, ROH_FINGER_POS_TARGET0, 1, [H_BYTE(0), L_BYTE(0), ], ROH_ADDR, True, )
+        time.sleep(0.5)
+        robot.Write_Registers(COM_PORT, ROH_FINGER_POS_TARGET5, 1, [H_BYTE(0), L_BYTE(0), ], ROH_ADDR, True, )
+        time.sleep(0.5)
+        robot.Write_Registers(COM_PORT, ROH_FINGER_POS_TARGET1, 1, [H_BYTE(0), L_BYTE(0), ], ROH_ADDR, True, )
+        time.sleep(0.5)
+        robot.Write_Registers(COM_PORT, ROH_FINGER_POS_TARGET2, 1, [H_BYTE(0), L_BYTE(0), ], ROH_ADDR, True, )
+        time.sleep(0.5)
+        robot.Write_Registers(COM_PORT, ROH_FINGER_POS_TARGET3, 1, [H_BYTE(0), L_BYTE(0), ], ROH_ADDR, True, )
+        time.sleep(0.5)
+        robot.Write_Registers(COM_PORT, ROH_FINGER_POS_TARGET4, 1, [H_BYTE(0), L_BYTE(0), ], ROH_ADDR, True, )
+        time.sleep(1)
+        #握拳1
+
+        robot.Write_Registers(COM_PORT, ROH_FINGER_POS_TARGET5, 1, [H_BYTE(65535), L_BYTE(65535), ], ROH_ADDR, True, )
+        time.sleep(0.5)
+        robot.Write_Registers(COM_PORT, ROH_FINGER_POS_TARGET1, 4,
+                              [
+                                  H_BYTE(65535), L_BYTE(65535),
+                                  H_BYTE(65535), L_BYTE(65535),
+                                  H_BYTE(65535), L_BYTE(65535),
+                                  H_BYTE(65535), L_BYTE(65535),
+
+                              ],
+                              ROH_ADDR,
+                              True,
+                              )
+        time.sleep(0.3)
+        robot.Write_Registers(COM_PORT, ROH_FINGER_POS_TARGET0, 1, [H_BYTE(65535), L_BYTE(65535), ], ROH_ADDR, True, )
+        time.sleep(1)
+        # 握拳2
+        robot.Write_Registers(COM_PORT, ROH_FINGER_POS_TARGET0, 1, [H_BYTE(0), L_BYTE(0), ], ROH_ADDR, True, )
+        time.sleep(1)
+        robot.Write_Registers(COM_PORT, ROH_FINGER_POS_TARGET1, 4,
+                              [
+                                  H_BYTE(0), L_BYTE(0),
+                                  H_BYTE(0), L_BYTE(0),
+                                  H_BYTE(0), L_BYTE(0),
+                                  H_BYTE(0), L_BYTE(0),
+
+                              ],
+                              ROH_ADDR,
+                              True,
+                              )
+        time.sleep(0.5)
+        robot.Write_Registers(COM_PORT, ROH_FINGER_POS_TARGET1, 4,
+                              [
+                                  H_BYTE(65535), L_BYTE(65535),
+                                  H_BYTE(65535), L_BYTE(65535),
+                                  H_BYTE(65535), L_BYTE(65535),
+                                  H_BYTE(65535), L_BYTE(65535),
+
+                              ],
+                              ROH_ADDR,
+                              True,
+                              )
+        time.sleep(0.3)
+        robot.Write_Registers(COM_PORT, ROH_FINGER_POS_TARGET0, 1, [H_BYTE(65535), L_BYTE(65535), ], ROH_ADDR, True, )
+        time.sleep(1)
+        robot.Write_Registers(COM_PORT, ROH_FINGER_POS_TARGET0, 1, [H_BYTE(0), L_BYTE(0), ], ROH_ADDR, True, )
+        time.sleep(1)
+        robot.Write_Registers(COM_PORT, ROH_FINGER_POS_TARGET1, 5,
+                              [
+                                  H_BYTE(0), L_BYTE(0),
+                                  H_BYTE(0), L_BYTE(0),
+                                  H_BYTE(0), L_BYTE(0),
+                                  H_BYTE(0), L_BYTE(0),
+                                  H_BYTE(0), L_BYTE(0),
+                              ],
+                              ROH_ADDR,
+                              True,
+                              )
+        time.sleep(2)
+
+
+
+        ret = robot.Movej_Cmd(joint1_bottle, 30, 0, True)  # 初始抓取水瓶关节角度
 
         robot.Write_Registers(COM_PORT, ROH_FINGER_POS_TARGET0, 6,
         [
@@ -101,27 +194,27 @@ if __name__ == "__main__":
             ROH_ADDR,
        True,
         )
-        time.sleep(1)
+        time.sleep(t)
         
-        ret = robot.Movel_Cmd(pose1_bottle, 50, 0, True)# 抓中间水
+        ret = robot.Movel_Cmd(pose1_bottle, v, 0, True)# 抓中间水
 
         robot.Write_Registers(COM_PORT,ROH_FINGER_POS_TARGET0,6,
             [
-                H_BYTE(8000), L_BYTE(8000),
-                H_BYTE(23000),L_BYTE(23000),
+                H_BYTE(12000), L_BYTE(12000),
                 H_BYTE(25000),L_BYTE(25000),
-                H_BYTE(22000),L_BYTE(22000),
-                H_BYTE(15000),L_BYTE(15000),
+                H_BYTE(27000),L_BYTE(27000),
+                H_BYTE(24000),L_BYTE(24000),
+                H_BYTE(17000),L_BYTE(17000),
                 H_BYTE(65535),L_BYTE(65535),
             ],
             ROH_ADDR,
             True,
         )
-        time.sleep(1)
+        time.sleep(t)
  
-        ret = robot.Movel_Cmd(pose2_bottle, 50, 0, True) # 中间抬起
-        ret = robot.Movel_Cmd(pose3_bottle, 50, 0, True) # 抬起移到右边
-        ret = robot.Movel_Cmd(pose4_bottle, 50, 0, True) # 放下右边
+        ret = robot.Movel_Cmd(pose2_bottle, v, 0, True) # 中间抬起
+        ret = robot.Movel_Cmd(pose3_bottle, v, 0, True) # 抬起移到右边
+        ret = robot.Movel_Cmd(pose4_bottle, v, 0, True) # 放下右边
 
         robot.Write_Registers(COM_PORT, ROH_FINGER_POS_TARGET0, 6,
         [
@@ -135,9 +228,9 @@ if __name__ == "__main__":
             ROH_ADDR,
            True,
         )
-        time.sleep(1)
+        time.sleep(t)
 
-        ret = robot.Movel_Cmd(pose5_bottle, 50, 0, True) # 右边往后抽
+        ret = robot.Movel_Cmd(pose5_bottle, v, 0, True) # 右边往后抽
 
         robot.Write_Registers(COM_PORT, ROH_FINGER_POS_TARGET0, 6,
         [
@@ -151,9 +244,9 @@ if __name__ == "__main__":
             ROH_ADDR,
            True,
         )
-        time.sleep(1)
+        time.sleep(t)
 
-        ret = robot.Movel_Cmd(pose6_ball, 50, 0, True) # 瞄准左边球
+        ret = robot.Movel_Cmd(pose6_ball, v, 0, True) # 瞄准左边球
 
         robot.Write_Registers(COM_PORT, ROH_FINGER_POS_TARGET0, 6,
         [
@@ -162,33 +255,33 @@ if __name__ == "__main__":
                 H_BYTE(0), L_BYTE(0),
                 H_BYTE(0), L_BYTE(0),
                 H_BYTE(0), L_BYTE(0),
-                H_BYTE(65535), L_BYTE(65535),
+                H_BYTE(55535), L_BYTE(55535),
             ],
             ROH_ADDR,
             True,
         )
-        time.sleep(1)
 
-        ret = robot.Movel_Cmd(pose7_ball, 50, 0, True) # 移到左边
-        ret = robot.Movel_Cmd(pose8_ball, 50, 0, True)  # 抓左边
+
+        ret = robot.Movel_Cmd(pose7_ball, v, 0, True) # 移到左边
+        ret = robot.Movel_Cmd(pose8_ball, v, 0, True)  # 抓左边
 
         robot.Write_Registers(COM_PORT,ROH_FINGER_POS_TARGET0,6,
         [
-            H_BYTE(8000), L_BYTE(8000),
-            H_BYTE(12000), L_BYTE(12000),
-            H_BYTE(14000), L_BYTE(14000),
+            H_BYTE(9000), L_BYTE(9000),
+            H_BYTE(13000), L_BYTE(13000),
+            H_BYTE(16000), L_BYTE(16000),
             H_BYTE(0), L_BYTE(0),
             H_BYTE(0), L_BYTE(0),
-            H_BYTE(65535), L_BYTE(65535),
+            H_BYTE(55535), L_BYTE(55535),
             ],
             ROH_ADDR,
             True,
         )
-        time.sleep(1)
+        time.sleep(t)
 
-        ret = robot.Movel_Cmd(pose9_ball, 50, 0, True) # 左边抬起
-        ret = robot.Movel_Cmd(pose10_ball, 50, 0, True) # 抬起移到中间
-        ret = robot.Movel_Cmd(pose1_ball, 50, 0, True) # 中间放下
+        ret = robot.Movel_Cmd(pose9_ball, v, 0, True) # 左边抬起
+        ret = robot.Movel_Cmd(pose10_ball, v, 0, True) # 抬起移到中间
+        ret = robot.Movel_Cmd(pose1_ball, v, 0, True) # 中间放下
 
         robot.Write_Registers(COM_PORT, ROH_FINGER_POS_TARGET0, 6,
         [
@@ -197,15 +290,15 @@ if __name__ == "__main__":
                 H_BYTE(0), L_BYTE(0),
                 H_BYTE(0), L_BYTE(0),
                 H_BYTE(0), L_BYTE(0),
-                H_BYTE(65535), L_BYTE(65535),
+                H_BYTE(55535), L_BYTE(55535),
             ],
             ROH_ADDR,
             True,
         )
-        time.sleep(1)
+        time.sleep(t)
 
-        ret = robot.Movel_Cmd(pose2_ball, 50, 0, True) # 中间抬起
-        ret = robot.Movel_Cmd(pose0_ball, 50, 0, True)  # 中间往后抽
+        ret = robot.Movel_Cmd(pose2_ball, v, 0, True) # 中间抬起
+        ret = robot.Movel_Cmd(pose0_ball, v, 0, True)  # 中间往后抽
 
         robot.Write_Registers(COM_PORT, ROH_FINGER_POS_TARGET0, 6,
                 [
@@ -219,9 +312,9 @@ if __name__ == "__main__":
             ROH_ADDR,
             True,
         )
-        time.sleep(1)
+        time.sleep(t)
 
-        ret = robot.Movel_Cmd(pose6_bottle, 50, 0, True) # 瞄准右边水
+        ret = robot.Movel_Cmd(pose6_bottle, v, 0, True) # 瞄准右边水
 
 
         robot.Write_Registers(COM_PORT, ROH_FINGER_POS_TARGET0, 6,
@@ -236,62 +329,29 @@ if __name__ == "__main__":
             ROH_ADDR,
             True,
         )
-        time.sleep(1)
+        time.sleep(t)
 
-        ret = robot.Movel_Cmd(pose4_bottle, 50, 0, True) # 抓右边
+        ret = robot.Movel_Cmd(pose4_bottle, v, 0, True) # 抓右边
 
         robot.Write_Registers(COM_PORT, ROH_FINGER_POS_TARGET0, 6,
         [
-            H_BYTE(8000), L_BYTE(8000),
-            H_BYTE(23000), L_BYTE(23000),
+            H_BYTE(12000), L_BYTE(12000),
             H_BYTE(25000), L_BYTE(25000),
-            H_BYTE(22000), L_BYTE(22000),
-            H_BYTE(15000), L_BYTE(15000),
+            H_BYTE(27000), L_BYTE(27000),
+            H_BYTE(24000), L_BYTE(24000),
+            H_BYTE(17000), L_BYTE(17000),
             H_BYTE(65535), L_BYTE(65535),
             ],
             ROH_ADDR,
             True,
         )
-        time.sleep(1)
+        time.sleep(t)
 
-        ret = robot.Movel_Cmd(pose7_bottle, 50, 0, True) # 右边抬起
-        ret = robot.Movel_Cmd(pose8_bottle, 50, 0, True) # 右边抬起往后抽
-        ret = robot.Movel_Cmd(pose9_bottle, 50, 0, True) # 抬起瞄准左边
-        ret = robot.Movel_Cmd(pose10_bottle, 50, 0, True) # 抬起移到左边
-        ret = robot.Movel_Cmd(pose11_bottle, 50, 0, True) # 左边放下
-
-        robot.Write_Registers(COM_PORT, ROH_FINGER_POS_TARGET0, 6,
-        [
-                H_BYTE(0), L_BYTE(0),
-                H_BYTE(0), L_BYTE(0),
-                H_BYTE(0), L_BYTE(0),
-                H_BYTE(0), L_BYTE(0),
-                H_BYTE(0), L_BYTE(0),
-                H_BYTE(65535), L_BYTE(65535),
-            ],
-            ROH_ADDR,
-            True,
-        )
-        time.sleep(1)
-
-        ret = robot.Movel_Cmd(pose12_bottle, 50, 0, True) # 左边往后抽
-        time.sleep(1)
-
-        robot.Write_Registers(COM_PORT, ROH_FINGER_POS_TARGET0, 6,
-        [
-                H_BYTE(0), L_BYTE(0),
-                H_BYTE(0), L_BYTE(0),
-                H_BYTE(0), L_BYTE(0),
-                H_BYTE(0), L_BYTE(0),
-                H_BYTE(0), L_BYTE(0),
-                H_BYTE(0), L_BYTE(0),
-            ],
-            ROH_ADDR,
-            True,
-        )
-        time.sleep(1)
-
-        ret = robot.Movel_Cmd(pose0_ball, 50, 0, True) # 移到中间
+        ret = robot.Movel_Cmd(pose7_bottle, v, 0, True) # 右边抬起
+        ret = robot.Movel_Cmd(pose8_bottle, v, 0, True) # 右边抬起往后抽
+        ret = robot.Movel_Cmd(pose9_bottle, v, 0, True) # 抬起瞄准左边
+        ret = robot.Movel_Cmd(pose10_bottle, v, 0, True) # 抬起移到左边
+        ret = robot.Movel_Cmd(pose11_bottle, v, 0, True) # 左边放下
 
         robot.Write_Registers(COM_PORT, ROH_FINGER_POS_TARGET0, 6,
         [
@@ -305,96 +365,130 @@ if __name__ == "__main__":
             ROH_ADDR,
             True,
         )
-        time.sleep(1)
+        time.sleep(t)
 
-        ret = robot.Movel_Cmd(pose1_ball, 50, 0, True)  # 抓中间球
+        ret = robot.Movel_Cmd(pose12_bottle, v, 0, True) # 左边往后抽
+        time.sleep(t)
+
+        robot.Write_Registers(COM_PORT, ROH_FINGER_POS_TARGET0, 6,
+        [
+                H_BYTE(0), L_BYTE(0),
+                H_BYTE(0), L_BYTE(0),
+                H_BYTE(0), L_BYTE(0),
+                H_BYTE(0), L_BYTE(0),
+                H_BYTE(0), L_BYTE(0),
+                H_BYTE(0), L_BYTE(0),
+            ],
+            ROH_ADDR,
+            True,
+        )
+        time.sleep(t)
+
+        ret = robot.Movel_Cmd(pose0_ball, v, 0, True) # 移到中间
+
+        robot.Write_Registers(COM_PORT, ROH_FINGER_POS_TARGET0, 6,
+        [
+                H_BYTE(0), L_BYTE(0),
+                H_BYTE(0), L_BYTE(0),
+                H_BYTE(0), L_BYTE(0),
+                H_BYTE(0), L_BYTE(0),
+                H_BYTE(0), L_BYTE(0),
+                H_BYTE(55535), L_BYTE(55535),
+            ],
+            ROH_ADDR,
+            True,
+        )
+        time.sleep(t)
+
+        ret = robot.Movel_Cmd(pose1_ball, v, 0, True)  # 抓中间球
 
         robot.Write_Registers(COM_PORT,ROH_FINGER_POS_TARGET0,6,
         [
-            H_BYTE(8000), L_BYTE(8000),
+            H_BYTE(9000), L_BYTE(9000),
+            H_BYTE(13000), L_BYTE(13000),
+            H_BYTE(16000), L_BYTE(16000),
+            H_BYTE(0), L_BYTE(0),
+            H_BYTE(0), L_BYTE(0),
+            H_BYTE(55535), L_BYTE(55535),
+            ],
+            ROH_ADDR,
+            True,
+        )
+        time.sleep(t)
+
+        ret = robot.Movel_Cmd(pose2_ball, v, 0, True)  # 抬起
+        ret = robot.Movel_Cmd(pose3_ball, v, 0, True)  # 抬起移到右边
+        ret = robot.Movel_Cmd(pose4_ball, v, 0, True)  # 放下右边
+
+        robot.Write_Registers(COM_PORT, ROH_FINGER_POS_TARGET0, 6,
+        [
+                H_BYTE(0), L_BYTE(0),
+                H_BYTE(0), L_BYTE(0),
+                H_BYTE(0), L_BYTE(0),
+                H_BYTE(0), L_BYTE(0),
+                H_BYTE(0), L_BYTE(0),
+                H_BYTE(55535), L_BYTE(55535),
+            ],
+            ROH_ADDR,
+            True,
+        )
+        time.sleep(t)
+
+        ret = robot.Movel_Cmd(pose5_ball, v, 0, True)  # 右边抬起
+        ret = robot.Movel_Cmd(pose5_bottle, v, 0, True)  # 右边往后抽
+        time.sleep(t)
+
+        robot.Write_Registers(COM_PORT, ROH_FINGER_POS_TARGET0, 6,
+        [
+        H_BYTE(0), L_BYTE(0),
+        H_BYTE(0), L_BYTE(0),
+        H_BYTE(0), L_BYTE(0),
+        H_BYTE(0), L_BYTE(0),
+        H_BYTE(0), L_BYTE(0),
+        H_BYTE(0), L_BYTE(0),
+        ],
+        ROH_ADDR,
+        True,
+         )
+        time.sleep(t)
+
+        ret = robot.Movel_Cmd(pose9_bottle, v, 0, True)  # 瞄准左边水
+
+
+        robot.Write_Registers(COM_PORT, ROH_FINGER_POS_TARGET0, 6,
+        [
+        H_BYTE(0), L_BYTE(0),
+        H_BYTE(0), L_BYTE(0),
+        H_BYTE(0), L_BYTE(0),
+        H_BYTE(0), L_BYTE(0),
+        H_BYTE(0), L_BYTE(0),
+        H_BYTE(65535), L_BYTE(65535),
+        ],
+        ROH_ADDR,
+        True,
+         )
+        time.sleep(t)
+        ret = robot.Movel_Cmd(pose11_bottle, v, 0, True)  # 抓左边
+
+        robot.Write_Registers(COM_PORT, ROH_FINGER_POS_TARGET0, 6,
+        [
             H_BYTE(12000), L_BYTE(12000),
-            H_BYTE(14000), L_BYTE(14000),
-            H_BYTE(0), L_BYTE(0),
-            H_BYTE(0), L_BYTE(0),
-            H_BYTE(65535), L_BYTE(65535),
-            ],
-            ROH_ADDR,
-            True,
-        )
-        time.sleep(1)
-
-        ret = robot.Movel_Cmd(pose2_ball, 50, 0, True)  # 抬起
-        ret = robot.Movel_Cmd(pose3_ball, 50, 0, True)  # 抬起移到右边
-        ret = robot.Movel_Cmd(pose4_ball, 50, 0, True)  # 放下右边
-
-        robot.Write_Registers(COM_PORT, ROH_FINGER_POS_TARGET0, 6,
-        [
-                H_BYTE(0), L_BYTE(0),
-                H_BYTE(0), L_BYTE(0),
-                H_BYTE(0), L_BYTE(0),
-                H_BYTE(0), L_BYTE(0),
-                H_BYTE(0), L_BYTE(0),
-                H_BYTE(65535), L_BYTE(65535),
-            ],
-            ROH_ADDR,
-            True,
-        )
-        time.sleep(1)
-
-        ret = robot.Movel_Cmd(pose5_ball, 50, 0, True)  # 右边抬起
-        ret = robot.Movel_Cmd(pose5_bottle, 50, 0, True)  # 右边往后抽
-        time.sleep(1)
-
-        robot.Write_Registers(COM_PORT, ROH_FINGER_POS_TARGET0, 6,
-                              [
-                                  H_BYTE(0), L_BYTE(0),
-                                  H_BYTE(0), L_BYTE(0),
-                                  H_BYTE(0), L_BYTE(0),
-                                  H_BYTE(0), L_BYTE(0),
-                                  H_BYTE(0), L_BYTE(0),
-                                  H_BYTE(0), L_BYTE(0),
-                              ],
-                              ROH_ADDR,
-                              True,
-                              )
-        time.sleep(1)
-
-        ret = robot.Movel_Cmd(pose9_bottle, 50, 0, True)  # 瞄准左边水
-
-
-        robot.Write_Registers(COM_PORT, ROH_FINGER_POS_TARGET0, 6,
-                              [
-                                  H_BYTE(0), L_BYTE(0),
-                                  H_BYTE(0), L_BYTE(0),
-                                  H_BYTE(0), L_BYTE(0),
-                                  H_BYTE(0), L_BYTE(0),
-                                  H_BYTE(0), L_BYTE(0),
-                                  H_BYTE(65535), L_BYTE(65535),
-                              ],
-                              ROH_ADDR,
-                              True,
-                              )
-        time.sleep(1)
-        ret = robot.Movel_Cmd(pose11_bottle, 50, 0, True)  # 抓左边
-
-        robot.Write_Registers(COM_PORT, ROH_FINGER_POS_TARGET0, 6,
-        [
-            H_BYTE(8000), L_BYTE(8000),
-            H_BYTE(23000), L_BYTE(23000),
             H_BYTE(25000), L_BYTE(25000),
-            H_BYTE(22000), L_BYTE(22000),
-            H_BYTE(15000), L_BYTE(15000),
+            H_BYTE(27000), L_BYTE(27000),
+            H_BYTE(24000), L_BYTE(24000),
+            H_BYTE(17000), L_BYTE(17000),
             H_BYTE(65535), L_BYTE(65535),
             ],
             ROH_ADDR,
             True,
         )
-        time.sleep(1)
+        time.sleep(t)
 
-        ret = robot.Movel_Cmd(pose10_bottle, 50, 0, True)  # 左边抬起
-        ret = robot.Movel_Cmd(pose9_bottle, 50, 0, True)  # 左边往后抽
-        ret = robot.Movel_Cmd(pose14_bottle, 50, 0, True)  # 移到中间
-        ret = robot.Movel_Cmd(pose1_bottle, 50, 0, True)  # 中间位置
+        ret = robot.Movel_Cmd(pose10_bottle, v, 0, True)  # 左边抬起
+        #ret = robot.Movel_Cmd(pose9_bottle, v, 0, True)  # 左边往后抽
+
+        ret = robot.Movel_Cmd(pose2_bottle, v, 0, True)  # 移到中间
+        ret = robot.Movel_Cmd(pose1_bottle, v, 0, True)  # 中间位置放下
 
         robot.Write_Registers(COM_PORT, ROH_FINGER_POS_TARGET0, 6,
         [
@@ -408,10 +502,10 @@ if __name__ == "__main__":
             ROH_ADDR,
             True,
         )
-        time.sleep(1)
+        time.sleep(t)
 
-        ret = robot.Movel_Cmd(pose0_bottle, 50, 0, True)  # 中间往后抽
-        time.sleep(1)
+        ret = robot.Movel_Cmd(pose0_bottle, v, 0, True)  # 中间往后抽
+        time.sleep(t)
 
         robot.Write_Registers(COM_PORT, ROH_FINGER_POS_TARGET0, 6,
         [
@@ -425,59 +519,45 @@ if __name__ == "__main__":
             ROH_ADDR,
             True,
         )
-        time.sleep(1)
+        time.sleep(t)
 
-        ret = robot.Movel_Cmd(pose11_ball, 50, 0, True)  # 瞄准右边球
-
-        robot.Write_Registers(COM_PORT, ROH_FINGER_POS_TARGET0, 6,
-                              [
-                                  H_BYTE(0), L_BYTE(0),
-                                  H_BYTE(0), L_BYTE(0),
-                                  H_BYTE(0), L_BYTE(0),
-                                  H_BYTE(0), L_BYTE(0),
-                                  H_BYTE(0), L_BYTE(0),
-                                  H_BYTE(65535), L_BYTE(65535),
-                              ],
-                              ROH_ADDR,
-                              True,
-                              )
-        time.sleep(1)
-
-        ret = robot.Movel_Cmd(pose3_ball, 50, 0, True)  # 移到右边
+        ret = robot.Movel_Cmd(pose11_ball, v, 0, True)  # 瞄准右边球
 
         robot.Write_Registers(COM_PORT, ROH_FINGER_POS_TARGET0, 6,
                               [
-                                  H_BYTE(0), L_BYTE(0),
-                                  H_BYTE(0), L_BYTE(0),
-                                  H_BYTE(0), L_BYTE(0),
-                                  H_BYTE(0), L_BYTE(0),
-                                  H_BYTE(0), L_BYTE(0),
-                                  H_BYTE(65535), L_BYTE(65535),
-                              ],
-                              ROH_ADDR,
-                              True,
-                              )
+       H_BYTE(0), L_BYTE(0),
+       H_BYTE(0), L_BYTE(0),
+       H_BYTE(0), L_BYTE(0),
+       H_BYTE(0), L_BYTE(0),
+       H_BYTE(0), L_BYTE(0),
+       H_BYTE(55535), L_BYTE(55535),
+       ],
+       ROH_ADDR,
+       True,
+        )
+        time.sleep(t)
 
-        ret = robot.Movel_Cmd(pose4_ball, 50, 0, True)  # 抓右边球
+        ret = robot.Movel_Cmd(pose4_ball, v, 0, True)  # 抓右边球
 
         robot.Write_Registers(COM_PORT,ROH_FINGER_POS_TARGET0,6,
         [
-            H_BYTE(8000), L_BYTE(8000),
-            H_BYTE(12000), L_BYTE(12000),
-            H_BYTE(14000), L_BYTE(14000),
+            H_BYTE(9000), L_BYTE(9000),
+            H_BYTE(13000), L_BYTE(13000),
+            H_BYTE(16000), L_BYTE(16000),
             H_BYTE(0), L_BYTE(0),
             H_BYTE(0), L_BYTE(0),
-            H_BYTE(65535), L_BYTE(65535),
+            H_BYTE(55535), L_BYTE(55535),
             ],
             ROH_ADDR,
             True,
         )
-        time.sleep(1)
+        time.sleep(t)
 
-        ret = robot.Movel_Cmd(pose5_ball, 50, 0, True)  # 右边抬起
-        ret = robot.Movel_Cmd(pose11_ball, 50, 0, True)  # 往后抽
-        ret = robot.Movel_Cmd(pose6_ball, 50, 0, True)  # 瞄准左边
-        ret = robot.Movel_Cmd(pose8_ball, 50, 0, True)  # 左边放下
+        ret = robot.Movel_Cmd(pose5_ball, v, 0, True)  # 右边抬起
+        ret = robot.Movel_Cmd(pose11_ball, v, 0, True)  # 往后抽
+        ret = robot.Movel_Cmd(pose6_ball, v, 0, True)  # 瞄准左边
+        ret = robot.Movel_Cmd(pose9_ball, v, 0, True)  # 移到左边
+        ret = robot.Movel_Cmd(pose8_ball, v, 0, True)  # 左边放下
 
         robot.Write_Registers(COM_PORT, ROH_FINGER_POS_TARGET0, 6,
         [
@@ -486,37 +566,37 @@ if __name__ == "__main__":
                 H_BYTE(0), L_BYTE(0),
                 H_BYTE(0), L_BYTE(0),
                 H_BYTE(0), L_BYTE(0),
+                H_BYTE(55535), L_BYTE(55535),
+            ],
+            ROH_ADDR,
+            True,
+        )
+        time.sleep(t)
+
+        ret = robot.Movel_Cmd(pose9_ball, v, 0, True)  # 左边抬起
+        time.sleep(t)
+
+        ret = robot.Movel_Cmd(pose6_ball, v, 0, True)  # 左边往后抽
+        ret = robot.Movel_Cmd(pose15_bottle, v, 0, True)  # 回到中间
+        ret = robot.Movej_Cmd(joint_V1, v, 0, True)  # 比耶
+
+
+
+        robot.Write_Registers(COM_PORT, ROH_FINGER_POS_TARGET0, 6,
+        [
+                H_BYTE(65535), L_BYTE(65535),
+                H_BYTE(0), L_BYTE(0),
+                H_BYTE(0), L_BYTE(0),
+                H_BYTE(65535), L_BYTE(65535),
+                H_BYTE(65535), L_BYTE(65535),
                 H_BYTE(65535), L_BYTE(65535),
             ],
             ROH_ADDR,
             True,
         )
-        time.sleep(1)
-
-        ret = robot.Movel_Cmd(pose9_ball, 50, 0, True)  # 左边抬起
-        time.sleep(1)
-
-        ret = robot.Movel_Cmd(pose6_ball, 50, 0, True)  # 左边往后抽
-        ret = robot.Movel_Cmd(pose15_bottle, 50, 0, True)  # 回到中间
-
-        robot.Write_Registers(COM_PORT, ROH_FINGER_POS_TARGET0, 6,
-        [
-                H_BYTE(0), L_BYTE(0),
-                H_BYTE(0), L_BYTE(0),
-                H_BYTE(0), L_BYTE(0),
-                H_BYTE(0), L_BYTE(0),
-                H_BYTE(0), L_BYTE(0),
-                H_BYTE(0), L_BYTE(0),
-            ],
-            ROH_ADDR,
-            True,
-        )
-        time.sleep(1)
-
-
-
-
-
+        time.sleep(t)
+        ret = robot.Movej_Cmd(joint_V2, v, 0, True)  # 比耶左
+        ret = robot.Movej_Cmd(joint_V3, v, 0, True)  # 比耶右
 
 
         counter += 1
