@@ -1,3 +1,4 @@
+import socket
 from robotic_arm_package.robotic_arm import *
 from roh_registers import *
 
@@ -7,7 +8,7 @@ ARM_IP = "192.168.1.18"
 COM_PORT = 1
 ROH_ADDR = 2
 
-LOOP_TIME = 2#100000 #循环次数
+LOOP_TIME = 10 #循环次数
 ARM_SPEED = 70 #机械臂速度/%
 DELAY_TIME = 0.5 #延时时间/s
 
@@ -31,12 +32,6 @@ def L_BYTE(v):
 def H_BYTE(v):
     return (v >> 8) & 0xFF
 
-
-TABLE_HEIGHT = 0.72 #桌面高度/m
-BASE_HEIGHT = 0.80 + 0.01 #底座高度/m
-
-OBJECT_DISTANCE = 0.56 #底座接线口右侧中心离中间孔距离/m
-HOLE_DISTANCE = 0.1775 #孔距/m
 
 OFFSET_BASE_TABLE = TABLE_HEIGHT - BASE_HEIGHT #采用桌面底座高度差，计算Z偏移值
 
@@ -95,9 +90,9 @@ HAND_GRASP_BALL_POS = [
 #
 # poses for bottle
 
-POSE_LIFT_LEFT_BOTTLE_BACK_HIGH =   [0.037 - HOLE_DISTANCE, -0.226 + OBJECT_DISTANCE, 0.231 + OFFSET_BASE_TABLE, -1.573, -0.474, -0.155]
-POSE_LIFT_MIDDLE_BOTTLE_BACK_HIGH = [0.037,                 -0.226 + OBJECT_DISTANCE, 0.231 + OFFSET_BASE_TABLE, -1.573, -0.474, -0.155]
-POSE_LIFT_RIGHT_BOTTLE_BACK_HIGH =  [0.037 + HOLE_DISTANCE, -0.226 + OBJECT_DISTANCE, 0.231 + OFFSET_BASE_TABLE, -1.573, -0.474, -0.155]
+POSE_LIFT_LEFT_BOTTLE_BACK_HIGH =   [0.037 - HOLE_DISTANCE, -0.226 + OBJECT_DISTANCE, 0.231 + OFFSET_BASE_TABLE, -1.555, -0.573, -0.163]
+POSE_LIFT_MIDDLE_BOTTLE_BACK_HIGH = [0.037,                 -0.226 + OBJECT_DISTANCE, 0.231 + OFFSET_BASE_TABLE, -1.555, -0.573, -0.163]
+POSE_LIFT_RIGHT_BOTTLE_BACK_HIGH =  [0.037 + HOLE_DISTANCE, -0.226 + OBJECT_DISTANCE, 0.231 + OFFSET_BASE_TABLE, -1.555, -0.573, -0.163]
 
 POSE_LIFT_BOTTLE_BACK_HIGH = [
     POSE_LIFT_LEFT_BOTTLE_BACK_HIGH,
@@ -105,9 +100,9 @@ POSE_LIFT_BOTTLE_BACK_HIGH = [
     POSE_LIFT_RIGHT_BOTTLE_BACK_HIGH
 ]
 
-POSE_GRASP_LEFT_BOTTLE =   [0.037 - HOLE_DISTANCE, -0.069 + OBJECT_DISTANCE, 0.181 + OFFSET_BASE_TABLE, -1.573, -0.474, -0.055]
-POSE_GRASP_MIDDLE_BOTTLE = [0.037,                 -0.069 + OBJECT_DISTANCE, 0.181 + OFFSET_BASE_TABLE, -1.573, -0.474, -0.055]
-POSE_GRASP_RIGHT_BOTTLE =  [0.037 + HOLE_DISTANCE, -0.069 + OBJECT_DISTANCE, 0.181 + OFFSET_BASE_TABLE, -1.573, -0.474, -0.055]
+POSE_GRASP_LEFT_BOTTLE =   [0.037 - HOLE_DISTANCE, -0.064 + OBJECT_DISTANCE, 0.181 + OFFSET_BASE_TABLE, -1.566, -0.573, -0.058]
+POSE_GRASP_MIDDLE_BOTTLE = [0.037,                 -0.064 + OBJECT_DISTANCE, 0.181 + OFFSET_BASE_TABLE, -1.566, -0.573, -0.058]
+POSE_GRASP_RIGHT_BOTTLE =  [0.037 + HOLE_DISTANCE, -0.064 + OBJECT_DISTANCE, 0.181 + OFFSET_BASE_TABLE, -1.566, -0.573, -0.058]
 
 POSE_GRASP_BOTTLE = [
     POSE_GRASP_LEFT_BOTTLE,
@@ -115,9 +110,9 @@ POSE_GRASP_BOTTLE = [
     POSE_GRASP_RIGHT_BOTTLE
 ]
 
-POSE_LIFT_LEFT_BOTTLE_HIGH =   [0.037 - HOLE_DISTANCE, -0.069 + OBJECT_DISTANCE, 0.231 + OFFSET_BASE_TABLE, -1.573, -0.474, -0.155]
-POSE_LIFT_MIDDLE_BOTTLE_HIGH = [0.037,                 -0.069 + OBJECT_DISTANCE, 0.231 + OFFSET_BASE_TABLE, -1.573, -0.474, -0.155]
-POSE_LIFT_RIGHT_BOTTLE_HIGH =  [0.037 + HOLE_DISTANCE, -0.069 + OBJECT_DISTANCE, 0.231 + OFFSET_BASE_TABLE, -1.573, -0.474, -0.155]
+POSE_LIFT_LEFT_BOTTLE_HIGH =   [0.037 - HOLE_DISTANCE, -0.064 + OBJECT_DISTANCE, 0.231 + OFFSET_BASE_TABLE, -1.555, -0.573, -0.163]
+POSE_LIFT_MIDDLE_BOTTLE_HIGH = [0.037,                 -0.064 + OBJECT_DISTANCE, 0.231 + OFFSET_BASE_TABLE, -1.555, -0.573, -0.163]
+POSE_LIFT_RIGHT_BOTTLE_HIGH =  [0.037 + HOLE_DISTANCE, -0.064 + OBJECT_DISTANCE, 0.231 + OFFSET_BASE_TABLE, -1.555, -0.573, -0.163]
 
 POSE_LIFT_BOTTLE_HIGH = [
     POSE_LIFT_LEFT_BOTTLE_HIGH,
@@ -135,11 +130,11 @@ HAND_READY_GRASP_BOTTLE_POS = [
 ]
 
 HAND_GRASP_BOTTLE_POS = [
-    H_BYTE(13000),L_BYTE(13000),
+    H_BYTE(15000),L_BYTE(15000),
     H_BYTE(30000),L_BYTE(30000),
-    H_BYTE(23000),L_BYTE(23000),
+    H_BYTE(21000),L_BYTE(21000),
     H_BYTE(20000),L_BYTE(20000),
-    H_BYTE(13000),L_BYTE(13000),
+    H_BYTE(16000),L_BYTE(16000),
     H_BYTE(65535),L_BYTE(65535),
 ]
 
@@ -250,6 +245,20 @@ def move_bottle(from_pos, to_pos):
     time.sleep(DELAY_TIME)
 
 
+while True:
+    s = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
+
+    try: 
+      s.connect((ARM_IP, 8080))
+      s.close()
+      break
+    except socket.error:
+      print("connect time out, try again")
+
+    time.sleep(1)
+
+
+print("Init arm")
 robot = Arm(RM65, ARM_IP)
 
 
@@ -260,7 +269,8 @@ if __name__ == "__main__":
 
     counter = 0
 
-    while counter < LOOP_TIME:
+    #while counter < LOOP_TIME:
+    while True:
         robot.Write_Registers(COM_PORT, ROH_FINGER_POS_TARGET0, 6,
             [
                 H_BYTE(0), L_BYTE(0),
@@ -274,7 +284,7 @@ if __name__ == "__main__":
             True,
         )
         
-        ret = robot.Movej_Cmd(joint0, ARM_SPEED, 0, True)
+        ret = robot.Movej_Cmd(joint0, 30, 0, True)
 
         ret = robot.Movej_Cmd(joint_Dance, ARM_SPEED, 0, True)  # 手指舞角度
         
@@ -439,7 +449,7 @@ if __name__ == "__main__":
         time.sleep(DELAY_TIME)
 
 
-        ret = robot.Movej_Cmd(joint_V1, ARM_SPEED, 0, True)  # 比耶
+        ret = robot.Movej_Cmd(joint_V1, 30, 0, True)  # 比耶
 
         robot.Write_Registers(COM_PORT, ROH_FINGER_POS_TARGET0, 6,
             [
