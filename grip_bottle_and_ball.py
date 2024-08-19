@@ -1,3 +1,4 @@
+import socket
 from robotic_arm_package.robotic_arm import *
 from roh_registers import *
 
@@ -238,11 +239,11 @@ HAND_READY_GRASP_BOTTLE_POS = [
 ]
 
 HAND_GRASP_BOTTLE_POS = [
-    H_BYTE(13000),L_BYTE(13000),
+    H_BYTE(15000),L_BYTE(15000),
     H_BYTE(30000),L_BYTE(30000),
-    H_BYTE(23000),L_BYTE(23000),
+    H_BYTE(21000),L_BYTE(21000),
     H_BYTE(19000),L_BYTE(19000),
-    H_BYTE(13000),L_BYTE(13000),
+    H_BYTE(16000),L_BYTE(16000),
     H_BYTE(65535),L_BYTE(65535),
 ]
 
@@ -320,6 +321,20 @@ def move_bottle(from_pos, to_pos):
     finger_move(target_fingers[0], 6, HAND_INITIAL_POS, DELAY_TIME)
 
 
+while True:
+    s = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
+
+    try: 
+      s.connect((ARM_IP, 8080))
+      s.close()
+      break
+    except socket.error:
+      print("connect time out, try again")
+
+    time.sleep(1)
+
+
+print("Init arm")
 robot = Arm(RM65, ARM_IP)
 
 
@@ -330,7 +345,8 @@ if __name__ == "__main__":
 
     counter = 0
 
-    while counter < LOOP_TIME:
+    #while counter < LOOP_TIME:
+    while True:
         finger_move(target_fingers[0], 6, HAND_INITIAL_POS, DELAY_TIME)
 
         ret = robot.Movej_Cmd(joint_initial, 30, 0, True)
