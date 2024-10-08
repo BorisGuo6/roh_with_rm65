@@ -1,11 +1,14 @@
 import os
 import cv2
+import sys
+
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+sys.path.append(BASE_DIR) 
+
 from roh_registers_v1 import *
 from robotic_arm_package.robotic_arm import *
 
 from cvzone.HandTrackingModule import HandDetector
-from pymodbus import FramerType
-from pymodbus.client import ModbusSerialClient
 
 
 ARM_IP = "192.168.1.18"
@@ -21,9 +24,6 @@ video = cv2.VideoCapture(0)
 
 robot.Close_Modbustcp_Mode()
 robot.Set_Modbus_Mode(1, 115200, 1, True)
-
-# client = ModbusSerialClient(COM_PORT, FramerType.RTU, 115200)
-# client.connect()
 
 prev_gesture = [0, 0, 0, 0, 0, 0]
 
