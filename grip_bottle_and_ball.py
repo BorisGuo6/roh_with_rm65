@@ -1,6 +1,6 @@
 import socket
 from robotic_arm_package.robotic_arm import *
-from roh_registers import *
+from roh_registers_v1 import *
 
 
 ARM_IP = "192.168.1.18"

@@ -21,14 +21,15 @@ pip install -r requirements.txt
 打开`gesture_ctrled_hand_on_rm65.py`并修改端口和设备地址，例如：
 
 ```python
-COM_PORT = "COM1"
+ARM_IP = "192.168.1.18"
+COM_PORT = 1
 NODE_ID = 2
 ```
 
 运行：
 
 ```python
-python gesture_ctrled_hand.py
+python gesture_ctrled_rohand_rm65.py
 ```
 
 按'q'退出。
