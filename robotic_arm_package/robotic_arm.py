@@ -181,6 +181,7 @@ if os_name == 'Windows':
     dllPath = os.path.join(CUR_PATH, "RM_Base.dll")
 elif os_name == 'Linux':
     dllPath = os.path.join(CUR_PATH, "libRM_Base.so")
+    # dllPath = os.path.join(CUR_PATH, "RM_Base.dll")
 else:
     print("当前操作系统：", os_name)
 
@@ -5365,7 +5366,11 @@ class Arm(Set_Joint, Get_Joint, Tcp_Config, Tool_Frame, Work_Frame, Arm_State, I
           Set_controller, Set_IO, Set_Tool_IO, Set_Gripper, Drag_Teach, Six_Force, Set_Hand, one_force,
           ModbusRTU, Set_Lift, Force_Position, Algo, Online_programming, Expand, UDP, Program_list, Electronic_Fencel,
           Global_Waypoint):
-    pDll = ctypes.cdll.LoadLibrary(dllPath)
+    # 使用 wine 加载 .dll 文件
+    if os.system(f"wine {dllPath}") != 0:
+        raise OSError(f"Failed to load {dllPath} with wine.")
+    else:
+        pDll = ctypes.cdll.LoadLibrary(dllPath)
 
     def __init__(self, dev_mode, ip, pCallback=None):
         # RM_Callback = ctypes.CFUNCTYPE(None, CallbackData)

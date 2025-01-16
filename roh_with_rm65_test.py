@@ -1,5 +1,6 @@
 from robotic_arm_package.robotic_arm import *
-from roh_registers import *
+from roh_registers_v1 import *
+import sys
 
 
 ARM_IP = "192.168.1.18"
@@ -144,5 +145,5 @@ if __name__ == "__main__":
         counter += 1
         print("已运行：", counter, "次")
 
-        # if counter == 5:
-        #     sys.exit()  # 立即停止程序，返回状态码 0
+        if counter == 1:
+            sys.exit()  # 立即停止程序，返回状态码 0
